@@ -1,0 +1,10 @@
+.button-selector {
+    padding: 10px;
+}
+.lower-buttons-container {
+  display: flex; /* or inline-flex */
+}
+
+.pic-container {
+    margin: 10px 10px 10px 10px;
+}

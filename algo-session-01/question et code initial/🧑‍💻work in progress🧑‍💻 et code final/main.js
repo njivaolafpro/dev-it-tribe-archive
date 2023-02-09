@@ -83,8 +83,53 @@ const data = [
   },
 ];
 
+const cart = [
+// {
+// id:
+// name
+// price total
+// quantitySelected
+// }
+]; 
+
+
 const calculatePriceVatIncluded = (price)=> {
   return price + (price * 20/100);
+}
+
+
+const onClickProduct = (productItem)=> {
+  window.alert(`on a cliqué sur: ${productItem.productName}`); // concatenation
+
+  const foundCartItem = cart.find(cartItem=> {    // quantitySelected -> 5
+    if (cartItem.id === productItem.id){
+      return true;
+    }
+    return false;
+  });
+
+  if (foundCartItem){     // 1. trouvé
+    // on ajoute un sur la quantité; -> il va être 5 + 1 = 6
+    foundCartItem.quantitySelected = foundCartItem.quantitySelected + 1; // on modifie l'item
+  } else {
+    // 2. PAS trouvé -> si le produit n'était pas encore dans le panier ( CART )
+    // ici: on va ajouter le produit dans le panier:
+    cart.push({
+      id: productItem.id,
+      name: productItem.productName,
+      priceTotal: productItem.price,
+      quantitySelected: 1
+    });
+  }
+
+
+  let cartListTexte = ''; // let pour qu'on puisse redéclarer sur la ligne 113
+  
+  cart.forEach(cartItem=> {
+    console.log('cartItem =', cartItem)
+    cartListTexte = cartListTexte +  '\n' + '🟢 Produit: ' + cartItem.name + ' ( quantité: ' + cartItem.quantitySelected + ' )';    // affichage
+  });
+  window.alert('PANIER:' + '\n' +cartListTexte )
 }
 
 const buildProductItem = (productItem) => {
@@ -110,6 +155,10 @@ const buildProductItem = (productItem) => {
   productHtmlElement.classList.add("group");
   productHtmlElement.classList.add("relative");
   productHtmlElement.innerHTML = htmlContent;
+  productHtmlElement.addEventListener('click', (event)=>{
+    console.log('clicked on:', { productItem })
+    onClickProduct(productItem);
+  });
   return productHtmlElement;
 };
 
