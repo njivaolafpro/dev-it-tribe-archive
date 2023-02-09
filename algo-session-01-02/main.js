@@ -43,22 +43,47 @@ const buildChoiceElement = (text)=> {
     return nodeEl;
 };
 
-const setupChoices = (parsedList) => {
-    const md1List = parsedList
-        .map(({ w1, w2, w3 }) => w1)
-    const uniqueMd1List = [...new Set(md1List)];
-    console.log('unique MD1 ->', uniqueMd1List);
 
-    const md1Ul = document.getElementById('ul-md1');
+const buildAndAppendToUl = (uniqueMd1List, ulId) => {
+    
+    const md1Ul = document.getElementById(ulId);
     console.log('got md1;')
 
     uniqueMd1List.forEach(md1Item => {
         const constructedEl = buildChoiceElement(md1Item);
         console.log('md1Ul.appendChild;', constructedEl)
         md1Ul.appendChild(constructedEl);
-    })
-    
+    });
+    return;
+}
+/**
+ * 
+ * @param {any[]} parsedList 
+ * @param {{filterW1: String, filterW2: String, filterW3: String}} param1 
+ */
+const generateChoices = (parsedList, { filterW1, filterW2, filterW3 } = {}) => {
+    const md1List = parsedList
+        .map(({ w1, w2, w3 }) => w1)
+    const uniqueMd1List = [...new Set(md1List)];
 
+    buildAndAppendToUl(uniqueMd1List, 'ul-md1');
+    // ----------------------------
+    const md2List = parsedList  // dependent on MD1
+        .filter(({ w1 }) => filterW1 === w1)  // only when w1 selected;
+        .map(({ w1, w2, w3 }) => w2);
+    
+    const uniqueMd2List = [...new Set(md2List)];
+
+    buildAndAppendToUl(uniqueMd2List, 'ul-md2');
+
+    //----------------------------
+    const md3List = parsedList  // dependent on MD2
+    .filter(({ w2 }) => filterW2 === w2)  // only when w2 selected;
+    .map(({ w1, w2, w3 }) => w3);
+
+    const uniqueMd3List = [...new Set(md3List)];
+
+    buildAndAppendToUl(uniqueMd3List, 'ul-md3');
 };
 
 const init = () => {
@@ -69,7 +94,7 @@ const init = () => {
     };
     const parsedFile = parseFile();
     console.log('parsedFile:', parsedFile);
-    setupChoices(parsedFile);
+    generateChoices(parsedFile);
 
     // populate:
 }
